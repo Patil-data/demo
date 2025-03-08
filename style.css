@@ -1,0 +1,91 @@
+import streamlit as st
+import requests
+import base64
+
+# Set up page config
+st.set_page_config(page_title="Pulse Care AI - Medical Diagnosis", layout="wide")
+
+# Custom CSS for styling
+st.markdown(
+    """
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .report-container {
+            background-color: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .header-title {
+            color: #004d99;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        .submit-button {
+            background-color: #004d99;
+            color: white;
+            font-size: 1.2rem;
+            padding: 0.5rem 2rem;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# App title and intro
+st.markdown("<div class='header-title'>Pulse Care AI - Medical Diagnosis</div>", unsafe_allow_html=True)
+st.markdown("Upload your chest X-ray and symptoms to receive an AI-powered diagnosis report.")
+
+# Patient details form
+with st.form("patient_details_form"):
+    st.markdown("<div class='section-title'>Enter Patient Details</div>", unsafe_allow_html=True)
+    name = st.text_input("Full Name")
+    age = st.number_input("Age", min_value=0, max_value=120, step=1)
+    weight = st.number_input("Weight (kg)", min_value=0.0, max_value=200.0, step=0.1)
+    height = st.number_input("Height (cm)", min_value=0.0, max_value=250.0, step=0.1)
+    blood_group = st.selectbox("Blood Group", ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"])
+    bp = st.text_input("Blood Pressure (e.g., 120/80)")
+    sugar = st.number_input("Blood Sugar Level (mg/dL)", min_value=0.0, max_value=500.0, step=0.1)
+    past_history = st.text_area("Past Medical History")
+    submit_patient_details = st.form_submit_button("Submit")
+
+# X-ray upload and symptom description
+st.markdown("<div class='section-title'>Upload Chest X-ray</div>", unsafe_allow_html=True)
+xray_image = st.file_uploader("Choose a chest X-ray image", type=["png", "jpg", "jpeg"])
+
+st.markdown("<div class='section-title'>Describe Your Symptoms</div>", unsafe_allow_html=True)
+symptoms = st.text_area("Describe your symptoms")
+
+# Diagnosis report
+if st.button("Generate Diagnosis Report"):
+    if all([name, age, weight, height, blood_group, bp, sugar, symptoms, xray_image]):
+        # Placeholder for AI prediction (replace with actual model API calls)
+        predicted_disease = "Pneumonia"
+        accuracy = "99%"
+        recommended_tests = ["Complete Blood Count (CBC)", "Chest CT Scan"]
+
+        st.markdown("<div class='section-title'>Diagnosis Report</div>", unsafe_allow_html=True)
+        st.markdown(f"**Patient Name:** {name}")
+        st.markdown(f"**Age:** {age}")
+        st.markdown(f"**Weight:** {weight} kg")
+        st.markdown(f"**Height:** {height} cm")
+        st.markdown(f"**Blood Group:** {blood_group}")
+        st.markdown(f"**Blood Pressure:** {bp}")
+        st.markdown(f"**Blood Sugar Level:** {sugar} mg/dL")
+        st.markdown(f"**Past Medical History:** {past_history if past_history else 'None'}")
+        st.markdown("---")
+        st.markdown(f"**Predicted Disease:** {predicted_disease}")
+        st.markdown(f"**Confidence Level:** {accuracy}")
+        st.markdown(f"**Recommended Tests:** {', '.join(recommended_tests)}")
+    else:
+        st.error("Please fill in all patient details, symptoms, and upload the X-ray.")
